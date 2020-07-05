@@ -1,1 +1,56 @@
+<h1><%= @post.title %></h1>
 
+<h2>Categories:</h2>
+<ul>
+<% @post.categories.each do |category| %>
+    <li><%= link_to category.name, category_path(category) %></li>
+<% end %>
+</ul>
+
+<h2>Content:</h2>
+<p><%= @post.content %></p>
+
+<h2>Comments:</h2>
+<ul>
+<% @post.comments.each do |comment| %>
+  <li>
+    <%= comment.user.username %> says: <%= comment.content %>
+  </li>
+<% end %>
+</ul>
+
+<h2>Commenters:</h2>
+<ul>
+<% @post.commenters.each do |commenter_name| %>
+<li><%= link_to commenter_name, user_path(User.find_by(username: commenter_name)) %></li>
+<% end %> 
+</ul>
+
+<%= form_for @post.comments.build do |f| %>
+  <%= f.hidden_field :post_id %>
+  <p>
+    <%= f.collection_select :user_id, User.all, :id, :username %>
+  </p>
+
+  <%= f.fields_for :user, User.new do |user_fields| %>
+    <%= user_fields.label :username %>
+    <%= user_fields.text_field :username %>
+  <% end %>
+  
+  <p>
+    <%= f.label :content, "New Comment" %><br>
+    <%= f.text_area :content %>
+  </p>
+  <br/>
+  <%= f.submit %>
+<% end %>
+    <%# <%= f.hidden_field :post_id, value: @post.id %>
+    <%# <%= f.label :user_id %>
+    <%# <%= f.collection_select :user_id, User.all, :id, :username, include_blank: 'Select or input a username' %>
+        <%# <%= fields_for :user_attributes, @comment.user do |user_fields|  %>
+            <%# <%= user_fields.text_field :username %><br>
+        <%# <% end %> 
+    <%# <%= f.label :content, "Content:" %><br>
+    <%# <%= f.text_area :content %><br> 
+    <%# <%= f.submit %> 
+<%# <% end %> 
